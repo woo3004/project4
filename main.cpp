@@ -27,9 +27,9 @@ int main(int argc, char* argv[]) {
 
   Interpreter i(p.getDataLog());
   
-  i.evalAllRules();
+  i.evalRules();
 
-  i.evalAllQueries();
+  i.evalQueries();
 
   return 0;
 
