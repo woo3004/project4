@@ -66,14 +66,10 @@ class Rule {
             stringstream ss;
             for(unsigned i = 0; i < rule_list.size(); i++) {
                 for(set<string>::iterator itr = check.begin(); itr != check.end(); itr++) {
-                    // cout << "compare " << *itr << " and " << ss.str();
                     if(*itr == ss.str()) {
-                        // cout <<  "cleared" << endl;
                         ss.str("");
-                        // cout << "remain: " << ss.str() << endl;
                     }
                 }
-                // cout << "ruleSize: " << rule_list.size() << endl;
                 ss << rule_list.at(i).rule_set.at(0).getID()  << "(" 
                 << rule_list.at(i).rule_set.at(0).parameterString() << ") :- ";
                 headPred = rule_list.at(i).rule_set.at(0);
@@ -89,21 +85,7 @@ class Rule {
                 check.insert(ss.str());
 
             }
-
-            
-
-            // cout << "flag" << endl;
-            
-
-            
-            // for(set<string>::iterator itr = check.begin(); itr != check.end(); itr++) {
-            //     if(*itr == ss.str()) {
-            //         return "";
-            //     }
-            // }
-
             check.insert(ss.str());
-            // cout << "add: " << ss.str() << endl;
 
             return ss.str();
         }

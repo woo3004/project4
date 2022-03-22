@@ -16,21 +16,16 @@ set<Tuple> tuple_set;
 
 
 public:
-    // void addTuple(Tuple t) {
-    //     tuple_set.insert(t);
-    // };
+    void addTuple(Tuple t) {
+        tuple_set.insert(t);
+    };
 
-    bool addTuple(Tuple t) {
-        pair<set<Tuple>::iterator,bool> insert = tuple_set.insert(t);
-        bool inserted = insert.second;
-        return inserted;
-    }
 
     bool newAddTuple(Tuple t) {
         pair<set<Tuple>::iterator,bool> insert = tuple_set.insert(t);
         bool inserted = insert.second;
         return inserted;
-    }
+    };
     
     string getName() {
         return name;
@@ -84,17 +79,17 @@ public:
     //     return ss.str();
     // }
 
-    // string toString() {
+    // string newToString() {
     //     stringstream ss;
-    //     for(Tuple x : tuple_set) {
-    //         if(x.empty()) {
+    //     for(Tuple tuple : tuple_set) {
+    //         if(tuple.empty()) {
                 
     //         }
     //         else {
     //             ss << endl << "  ";
-    //             for(int i = 0; i < (int)x.size(); ++i) {
-    //                 ss << scheme.at(i) << "=" << x.at(i);
-    //                 if(i == (int)x.size()-1) {
+    //             for(int i = 0; i < (int)tuple.size(); ++i) {
+    //                 ss << scheme.at(i) << "=" << tuple.at(i);
+    //                 if(i == (int)tuple.size()-1) {
                         
     //                 }
     //                 else {
@@ -187,54 +182,53 @@ public:
         return newRelation;
     };
 
-    // static bool joinable(const Scheme& leftScheme, const Scheme& rightScheme,
-	//     	const Tuple& leftTuple, const Tuple& rightTuple) {
-    //     bool flag = true;
+    static bool joinable(const Scheme& leftScheme, const Scheme& rightScheme,
+	    	const Tuple& leftTuple, const Tuple& rightTuple) {
+        bool flag = true;
 
-    //     for (unsigned leftIndex = 0; leftIndex < leftScheme.size(); leftIndex++) {
-    //         const string& leftName = leftScheme.at(leftIndex);
-    //         const string& leftValue = leftTuple.at(leftIndex);
-    //         cout << "left name: " << leftName << " value: " << leftValue << endl;
-    //         for (unsigned rightIndex = 0; rightIndex < rightScheme.size(); rightIndex++) {
-    //             const string& rightName = rightScheme.at(rightIndex);
-    //             const string& rightValue = rightTuple.at(rightIndex);
-    //             cout << "right name: " << rightName << " value: " << rightValue << endl;
-    //             if(leftIndex != leftScheme.size()-1) {
-    //                 for (unsigned rightIndex = 0; rightIndex < rightScheme.size(); rightIndex++) {
-    //                     const string& rightName = rightScheme.at(rightIndex);
-    //                     const string& rightValue = rightTuple.at(rightIndex);
-    //                     if(leftScheme.at(leftIndex+1) == rightName && leftTuple.at(leftIndex+1) != rightValue) {
-    //                         flag = false;
-    //                     }
-    //                 }
-    //             }
+        for (unsigned leftIndex = 0; leftIndex < leftScheme.size(); leftIndex++) {
+            const string& leftName = leftScheme.at(leftIndex);
+            const string& leftValue = leftTuple.at(leftIndex);
+            cout << "left name: " << leftName << " value: " << leftValue << endl;
+            for (unsigned rightIndex = 0; rightIndex < rightScheme.size(); rightIndex++) {
+                const string& rightName = rightScheme.at(rightIndex);
+                const string& rightValue = rightTuple.at(rightIndex);
+                cout << "right name: " << rightName << " value: " << rightValue << endl;
+                if(leftIndex != leftScheme.size()-1) {
+                    for (unsigned rightIndex = 0; rightIndex < rightScheme.size(); rightIndex++) {
+                        const string& rightName = rightScheme.at(rightIndex);
+                        const string& rightValue = rightTuple.at(rightIndex);
+                        if(leftScheme.at(leftIndex+1) == rightName && leftTuple.at(leftIndex+1) != rightValue) {
+                            flag = false;
+                        }
+                    }
+                }
                 
-    //         }
-    //     }
+            }
+        }
 
-    //     return flag;
-    // }
+        return flag;
+    }
 
-    // Relation join(const Relation& r) {
+    Relation join(const Relation& r) {
 
-    //     const Scheme& leftScheme = scheme;
-    //     const Scheme& rightScheme = r.scheme;
+        const Scheme& leftScheme = scheme;
+        const Scheme& rightScheme = r.scheme;
 
-    //     for (const Tuple& leftTuple : tuple_set) {
-    //         cout << "left tuple: " << leftTuple.toString(leftScheme) << endl;
+        for (const Tuple& leftTuple : tuple_set) {
+            cout << "left tuple: " << leftTuple.toString(leftScheme) << endl;
 
-    //         for (const Tuple& rightTuple : r.tuple_set) {
-    //             cout << "right tuple: " << rightTuple.toString(rightScheme) << endl;
-    //         }
-    //     }
+            for (const Tuple& rightTuple : r.tuple_set) {
+                cout << "right tuple: " << rightTuple.toString(rightScheme) << endl;
+            }
+        }
         
 
-    //     return Relation();
-    // }
+        return Relation();
+    }
 
 
     Relation join(Relation relation1, Relation relation2) {
-        // Find matching and unique columns
         Scheme newScheme = relation1.getScheme();
         map<int, int> matching;
         for(int i = 0; i < (int)(relation2.getScheme()).size(); ++i){
@@ -255,7 +249,6 @@ public:
         bool noMatches = false;
         for(Tuple t1 : relation1.getSet()){
             for(Tuple t2 : relation2.getSet()){
-                //Test if joinable
                 if(matching.empty()) {
                     isJoinable = true;
                     noMatches = true;
@@ -271,7 +264,6 @@ public:
                         }
                     }
                 }
-                // If joinable, join them
                 
                 if(isJoinable == true) {
                     Tuple newTuple = t1;
@@ -301,16 +293,14 @@ public:
     }
 
 
-    void unite(Relation relation1){
-        for(Tuple x : relation1.getSet()) {
-            // Check for duplicates
+    void combine(Relation rel){
+        for(auto r : rel.getSet()) {
             if(this->newAddTuple(x) == false) {
-                //If tuple is already in the relation set, do nothing
             }
             else {
                 cout << endl  << "  ";
                 for(int i = 0; i < (int)this->scheme.size(); i++) {
-                    cout << this->scheme.at(i) << "=" << x.at(i);
+                    cout << this->scheme.at(i) << "=" << r.at(i);
                     if(i == (int)this->scheme.size()-1) {
                         if(i != (int)this->scheme.size()-1) {
 

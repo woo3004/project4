@@ -291,7 +291,7 @@ class Parser {
             match(END_FILE);
         }
 
-
+        // From Project2
         // if(tokens.size()==0 && err) {
         //     cout << "Success!" << endl;
         //     cout << date.schemeString();
@@ -305,6 +305,7 @@ class Parser {
         //     cout << "Failure!" << endl;
         //     cout << "  " << errToken.toString() << endl;
         // }
+
         date.setRule(r);
 
     }
