@@ -67,14 +67,14 @@ public:
                 myRelation = myRelation.select(predParams.at(i).getParaVal(), i, myRelation);
             }
             else {
-                map<string, int> :: iterator duplicate = variables.find(predParams.at(i).getParaVal());
-                if(duplicate == variables.end()) {
+                map<string, int>::iterator duplicateItr = variables.find(predParams.at(i).getParaVal());
+                if(duplicateItr == variables.end()) {
                     positions.push_back(i);
                     variableNames.push_back(predParams.at(i).getParaVal());
                     variables.insert(pair<string, int>(predParams.at(i).getParaVal(), i));
                 }
                 else {
-                    myRelation = myRelation.select(duplicate->second, i, myRelation);
+                    myRelation = myRelation.select(duplicateItr->second, i, myRelation);
                 }
             }
             

@@ -182,33 +182,33 @@ public:
         return newRelation;
     };
 
-    static bool joinable(const Scheme& leftScheme, const Scheme& rightScheme,
-	    	const Tuple& leftTuple, const Tuple& rightTuple) {
-        bool flag = true;
+    // static bool joinable(const Scheme& leftScheme, const Scheme& rightScheme,
+	//     	const Tuple& leftTuple, const Tuple& rightTuple) {
+    //     bool flag = true;
 
-        for (unsigned leftIndex = 0; leftIndex < leftScheme.size(); leftIndex++) {
-            const string& leftName = leftScheme.at(leftIndex);
-            const string& leftValue = leftTuple.at(leftIndex);
-            cout << "left name: " << leftName << " value: " << leftValue << endl;
-            for (unsigned rightIndex = 0; rightIndex < rightScheme.size(); rightIndex++) {
-                const string& rightName = rightScheme.at(rightIndex);
-                const string& rightValue = rightTuple.at(rightIndex);
-                cout << "right name: " << rightName << " value: " << rightValue << endl;
-                if(leftIndex != leftScheme.size()-1) {
-                    for (unsigned rightIndex = 0; rightIndex < rightScheme.size(); rightIndex++) {
-                        const string& rightName = rightScheme.at(rightIndex);
-                        const string& rightValue = rightTuple.at(rightIndex);
-                        if(leftScheme.at(leftIndex+1) == rightName && leftTuple.at(leftIndex+1) != rightValue) {
-                            flag = false;
-                        }
-                    }
-                }
+    //     for (unsigned leftIndex = 0; leftIndex < leftScheme.size(); leftIndex++) {
+    //         const string& leftName = leftScheme.at(leftIndex);
+    //         const string& leftValue = leftTuple.at(leftIndex);
+    //         cout << "left name: " << leftName << " value: " << leftValue << endl;
+    //         for (unsigned rightIndex = 0; rightIndex < rightScheme.size(); rightIndex++) {
+    //             const string& rightName = rightScheme.at(rightIndex);
+    //             const string& rightValue = rightTuple.at(rightIndex);
+    //             cout << "right name: " << rightName << " value: " << rightValue << endl;
+    //             if(leftIndex != leftScheme.size()-1) {
+    //                 for (unsigned rightIndex = 0; rightIndex < rightScheme.size(); rightIndex++) {
+    //                     const string& rightName = rightScheme.at(rightIndex);
+    //                     const string& rightValue = rightTuple.at(rightIndex);
+    //                     if(leftScheme.at(leftIndex+1) == rightName && leftTuple.at(leftIndex+1) != rightValue) {
+    //                         flag = false;
+    //                     }
+    //                 }
+    //             }
                 
-            }
-        }
+    //         }
+    //     }
 
-        return flag;
-    }
+    //     return flag;
+    // }
 
     Relation join(const Relation& r) {
 
@@ -228,34 +228,38 @@ public:
     }
 
 
-    Relation join(Relation relation1, Relation relation2) {
-        Scheme newScheme = relation1.getScheme();
+    Relation join(Relation rel1, Relation rel2) {
+        Scheme newScheme = rel1.getScheme();
         map<int, int> matching;
-        for(int i = 0; i < (int)(relation2.getScheme()).size(); ++i){
+        for(int i = 0; i < (int)(rel2.getScheme()).size(); ++i){
             bool match = false;
-            for(int j = 0; j < (int)(relation1.getScheme()).size(); ++j) {
-                if(relation2.getScheme().at(i) == relation1.getScheme().at(j)){
+            for(int j = 0; j < (int)(rel1.getScheme()).size(); ++j) {
+                if(rel2.getScheme().at(i) == rel1.getScheme().at(j)){
                     matching.insert(pair<int, int>(j, i));
                     match = true;
                 }
             }
             if(match == false) {
-                newScheme.push_back(relation2.getScheme().at(i));
+                newScheme.push_back(rel2.getScheme().at(i));
             }
         }
         
-        Relation joinedRelation(name, newScheme);
+        return joinable(name, newScheme, rel1, rel2, matching);
+    }
+
+    Relation joinable(string joinString, Scheme joinScheme, Relation joinRel1, Relation joinRel2, map<int,int> joinMap) {
+        Relation joinedRelation(name, joinScheme);
         bool isJoinable = false;
         bool noMatches = false;
-        for(Tuple t1 : relation1.getSet()){
-            for(Tuple t2 : relation2.getSet()){
-                if(matching.empty()) {
+        for(Tuple tuple1 : joinRel1.getSet()){
+            for(Tuple tuple2 : joinRel2.getSet()){
+                if(joinMap.empty()) {
                     isJoinable = true;
                     noMatches = true;
                 }
                 else {
-                    for(map<int, int>::iterator it = matching.begin(); it!=matching.end(); it++){
-                        if(t1.at(it->first) == t2.at(it->second)) {
+                    for(map<int, int>::iterator itr = joinMap.begin(); itr!=joinMap.end(); itr++){
+                        if(tuple1.at(itr->first) == tuple2.at(itr->second)) {
                             isJoinable = true;
                         }
                         else{
@@ -266,22 +270,22 @@ public:
                 }
                 
                 if(isJoinable == true) {
-                    Tuple newTuple = t1;
+                    Tuple newTuple = tuple1;
                     if(noMatches == true) {
-                        for(int i = 0; i < (int)t2.size(); i++){
-                            newTuple.push_back(t2.at(i));
+                        for(int i = 0; i < (int)tuple2.size(); i++){
+                            newTuple.push_back(tuple2.at(i));
                         }
                     }
                     else {
-                        for(int i = 0; i < (int)t2.size(); i++){
-                            bool isUnique = true;
-                            for(map<int, int>::iterator it = matching.begin(); it!=matching.end(); it++){
-                                if(it->second == i) {
-                                    isUnique = false;
+                        for(int i = 0; i < (int)tuple2.size(); i++){
+                            bool unique = true;
+                            for(map<int, int>::iterator itr = joinMap.begin(); itr!=joinMap.end(); itr++){
+                                if(itr->second == i) {
+                                    unique = false;
                                 }
                             }
-                            if(isUnique == true) {
-                                newTuple.push_back(t2.at(i));
+                            if(unique == true) {
+                                newTuple.push_back(tuple2.at(i));
                             }
                         }
                     }
@@ -289,6 +293,7 @@ public:
                 }
             }
         }
+
         return joinedRelation;
     }
 
