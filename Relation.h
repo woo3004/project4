@@ -294,13 +294,13 @@ public:
 
 
     void combine(Relation rel){
-        for(auto r : rel.getSet()) {
-            if(this->newAddTuple(x) == false) {
+        for(auto tuple : rel.getSet()) {
+            if(this->newAddTuple(tuple) == false) {
             }
             else {
                 cout << endl  << "  ";
                 for(int i = 0; i < (int)this->scheme.size(); i++) {
-                    cout << this->scheme.at(i) << "=" << r.at(i);
+                    cout << this->scheme.at(i) << "=" << tuple.at(i);
                     if(i == (int)this->scheme.size()-1) {
                         if(i != (int)this->scheme.size()-1) {
 
