@@ -5,7 +5,7 @@
 
 int main(int argc, char* argv[]) {
 
-  //this is to see if it pulls from github
+  //Wow!
   vector<Token> myTokens;
   
   string fileName = argv[1];
