@@ -5,7 +5,6 @@
 
 int main(int argc, char* argv[]) {
 
-  //Wow!
   vector<Token> myTokens;
   
   string fileName = argv[1];
